@@ -1,0 +1,79 @@
+import urllib.request
+import re
+
+
+def jacks_algo_half(team1, opponent):
+    global team1_Ortg
+    global opponent_Drtg
+
+    t1_offensiverating_url = 'https://www.basketball-reference.com/teams/' + team1 + '/2021.html'
+    opponent_defensiverating_url = 'https://www.basketball-reference.com/teams/' + opponent + '/2021.html'
+
+    team1_pos = input('Team 1 possessions per game: ')
+
+    offensiverating_site = urllib.request.urlopen(t1_offensiverating_url)
+    offensiverating_text = offensiverating_site.read().decode('utf-8')
+    team1_offensiverating_regex = re.compile(r'>Off Rtg</a></strong>: (\d+\.?\d+?)')
+    for match in team1_offensiverating_regex.finditer(offensiverating_text):
+        team1_Ortg = match.group(1)
+    team1_Ortg = float(team1_Ortg) / 100
+
+    opponent_defensiverating_site = urllib.request.urlopen(opponent_defensiverating_url)
+    opponent_defensiverating_text = opponent_defensiverating_site.read().decode('utf-8')
+    opponent_defensiverating_regex = re.compile(r'>Def Rtg</a></strong>: (\d+\.?\d+?)')
+    for match in opponent_defensiverating_regex.finditer(opponent_defensiverating_text):
+        opponent_Drtg = match.group(1)
+    opponent_Drtg = float(opponent_Drtg) / 100
+
+    equation_1 = (float(team1_pos) / 2) * float(team1_Ortg) * float(opponent_Drtg)
+
+    team1_fhp = input('Team 1 first half points: ')
+
+    opponent_fhpa = input('Opponent\'s first half points against: ')
+
+    equation_2 = ((float(team1_fhp) * float(opponent_Drtg)) + (float(opponent_fhpa) * float(team1_Ortg))) / 2
+
+    return round(((equation_1 + equation_2) / 2), 5)
+
+
+def jacks_algo_quarter(team1, opponent):
+    global team1_Ortg
+    global opponent_Drtg
+
+    t1_offensiverating_url = 'https://www.basketball-reference.com/teams/' + team1 + '/2021.html'
+    opponent_defensiverating_url = 'https://www.basketball-reference.com/teams/' + opponent + '/2021.html'
+
+    team1_pos = input('Team 1 possessions per game: ')
+
+    offensiverating_site = urllib.request.urlopen(t1_offensiverating_url)
+    offensiverating_text = offensiverating_site.read().decode('utf-8')
+    team1_offensiverating_regex = re.compile(r'>Off Rtg</a></strong>: (\d+\.?\d+?)')
+    for match in team1_offensiverating_regex.finditer(offensiverating_text):
+        team1_Ortg = match.group(1)
+    team1_Ortg = float(team1_Ortg) / 100
+
+    opponent_defensiverating_site = urllib.request.urlopen(opponent_defensiverating_url)
+    opponent_defensiverating_text = opponent_defensiverating_site.read().decode('utf-8')
+    opponent_defensiverating_regex = re.compile(r'>Def Rtg</a></strong>: (\d+\.?\d+?)')
+    for match in opponent_defensiverating_regex.finditer(opponent_defensiverating_text):
+        opponent_Drtg = match.group(1)
+    opponent_Drtg = float(opponent_Drtg) / 100
+
+    equation_1 = (float(team1_pos) / 4) * float(team1_Ortg) * float(opponent_Drtg)
+
+    team1_fqp = input('Team 1 first quarter points per game: ')
+
+    opponent_fqpa = input('Team 2 opponent first quarter points per game: ')
+
+    equation_2 = ((float(team1_fqp) * float(opponent_Drtg)) + (float(opponent_fqpa) * float(team1_Ortg))) / 2
+
+    return round(((equation_1 + equation_2) / 2), 5)
+
+
+print('FIRST HALF POINTS *** DON\'T FORGET TO CHANGE TEAMS WHEN CALLING FUNCTION ***')
+print('Team 1 First Half Points: ' + str(jacks_algo_half('MIN', 'POR')))
+print('Team 2 First Half Points: ' + str(jacks_algo_half('POR', 'MIN')))
+
+print('FIRST QUARTER POINTS *** DON\'T FORGET TO CHANGE TEAMS WHEN CALLING FUNCTION *** ')
+print('Team 1 First Quarter Points: ' + str(jacks_algo_quarter('MIN', 'POR')))
+print('Team 2 First Quarter Points: ' + str(jacks_algo_quarter('POR', 'MIN')))
